@@ -1,6 +1,7 @@
 FROM ubuntu:24.04
 
 ENV ANDROID_HOME /root/android-sdk
+ENV ANDROID_SDK_ROOT /root/android-sdk
 ENV PATH ${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator
 ENV TZ=UTC
 
