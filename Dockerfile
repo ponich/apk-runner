@@ -1,7 +1,14 @@
 FROM ubuntu:24.04
 
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y cpu-checker
+RUN apt-get install -y \
+    cpu-checker \
+    qemu-kvm \
+    libvirt-daemon-system \
+    libvirt-clients \
+    bridge-utils \
+    kmod
+
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV TZ=UTC

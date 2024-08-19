@@ -12,7 +12,7 @@ stop_and_remove_container() {
 }
 
 start_container_and_enter_bash() {
-    echo "Запускаем контейнер и входим в bash..."
+    echo "Запускаем контейнер с привилегиями и входим в bash..."
     docker-compose up -d --build
     docker exec -it ${CONTAINER_NAME} /bin/bash
 }
@@ -31,4 +31,3 @@ else
 fi
 
 stop_and_remove_container
-

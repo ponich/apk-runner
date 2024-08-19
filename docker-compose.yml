@@ -11,11 +11,15 @@ services:
         stdin_open: true
         volumes:
             - ./shared:/home/shared
+            - /dev/kvm:/dev/kvm
         deploy:
             resources:
                 limits:
                     cpus: '2'
                     memory: 2G
+        devices:
+            - /dev/kvm:/dev/kvm
+        privileged: true
         networks:
             - my-network
 
