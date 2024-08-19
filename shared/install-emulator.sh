@@ -25,9 +25,33 @@ sdkmanager "platform-tools" "platforms;android-33" "system-images;android-33;goo
 echo "no" | avdmanager create avd -n test_avd -k "system-images;android-33;google_apis;x86_64" --force
 
 # Настраиваем конфигурацию AVD
-mkdir -p ~/.android/avd/test_avd.avd
-echo "avd.ini.encoding=UTF-8" > ~/.android/avd/test_avd.avd/config.ini
-echo "path=$ANDROID_SDK_ROOT/system-images/android-33/google_apis/x86_64/" >> ~/.android/avd/test_avd.avd/config.ini
+mkdir -p /root/.android/avd/test_avd.avd
+cat << EOF > /root/.android/avd/test_avd.avd/config.ini
+avd.ini.encoding=UTF-8
+path=$ANDROID_SDK_ROOT/system-images/android-33/google_apis/x86_64/
+target=android-33
+hw.device.name=pixel
+hw.device.manufacturer=Google
+hw.cpu.ncore=2
+hw.ramSize=2048
+hw.screen=touch
+hw.mainKeys=no
+hw.keyboard=yes
+hw.gpu.enabled=yes
+skin.name=720x1280
+hw.gpu.mode=auto
+hw.initialOrientation=Portrait
+hw.camera.back=emulated
+hw.camera.front=emulated
+disk.dataPartition.size=2048M
+EOF
+
+# Создаем файл ini для AVD
+cat << EOF > /root/.android/avd/test_avd.ini
+avd.ini.encoding=UTF-8
+path=/root/.android/avd/test_avd.avd
+target=android-33
+EOF
 
 # Проверяем, что AVD создан
 avdmanager list avd
