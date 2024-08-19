@@ -1,32 +1,33 @@
 version: '3.8'
 
 services:
-    ubuntu-24-04:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        image: ubuntu-24-04-base
-        container_name: ubuntu-24-04-container
-        tty: true
-        stdin_open: true
-        volumes:
-            - ./shared:/home/shared
-            - /dev/kvm:/dev/kvm
-        deploy:
-            resources:
-                limits:
-                    cpus: '2'
-                    memory: 2G
-        devices:
-            - /dev/kvm:/dev/kvm
-        privileged: true
-        cap_add:
-            - ALL
-        security_opt:
-            - seccomp:unconfined
-        networks:
-            - my-network
+  ubuntu-24-04:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ubuntu-24-04-base
+    container_name: ubuntu-24-04-container
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./shared:/home/shared
+      - /dev/kvm:/dev/kvm
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+    devices:
+      - /dev/kvm:/dev/kvm
+    privileged: true
+    cap_add:
+      - ALL
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - my-network
 
 networks:
-    my-network:
-        driver: bridge
+  my-network:
+    driver: bridge

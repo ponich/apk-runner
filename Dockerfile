@@ -24,21 +24,9 @@ RUN apt-get update && apt-get upgrade -y && \
 # Устанавливаем рабочую директорию
 WORKDIR /root
 
-# Скачиваем Android command line tools
-RUN wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip && \
-    unzip commandlinetools-linux-10406996_latest.zip && \
-    rm commandlinetools-linux-10406996_latest.zip
-
-# Создаем нужную структуру директорий
-RUN mkdir -p ${ANDROID_HOME}/cmdline-tools/latest && \
-    mv cmdline-tools/* ${ANDROID_HOME}/cmdline-tools/latest/ && \
-    rmdir cmdline-tools
-
-# Принимаем лицензии и устанавливаем необходимые компоненты SDK
-RUN yes | sdkmanager --licenses && \
-    sdkmanager "platform-tools" "platforms;android-33" "system-images;android-33;google_apis;x86_64"
-
-# Создаем AVD, автоматически принимая настройки по умолчанию
-# RUN echo "no" | avdmanager create avd -n test_avd -k "system-images;android-33;google_apis;x86_64"
+# Копируем и запускаем скрипт установки эмулятора
+COPY ./shared/install-emulator.sh /root/install-emulator.sh
+RUN chmod +x /root/install-emulator.sh && \
+    /root/install-emulator.sh
 
 CMD ["/bin/bash"]
