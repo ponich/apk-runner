@@ -4,7 +4,7 @@ FROM budtmo/docker-android:latest
 COPY shared/app.apk /root/app.apk
 
 # Устанавливаем APK
-RUN adb install /root/app.apk
+#RUN adb install /root/app.apk
 
 # Запускаем приложение и делаем скриншот
 # CMD adb shell monkey -p $(aapt dump badging /root/app.apk | awk -F" " '/package/{gsub("name=|'"'"'","");  print $2}') 1 && \
