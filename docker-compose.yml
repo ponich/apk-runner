@@ -25,8 +25,6 @@ services:
       - seccomp:unconfined
     networks:
       - my-network
-    storage_opt:
-      size: '10G'
 
 networks:
   my-network:
