@@ -2,41 +2,48 @@
 
 set -e
 
-# Устанавливаем переменные окружения
 export ANDROID_HOME=/root/android-sdk
 export ANDROID_SDK_ROOT=/root/android-sdk
 export PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator
 
-# Функция для вывода отладочной информации
 debug_info() {
     echo "DEBUG: $1"
     ls -la $2
 }
 
-# Скачиваем Android command line tools
 wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip
 unzip commandlinetools-linux-10406996_latest.zip
 rm commandlinetools-linux-10406996_latest.zip
 
-# Создаем нужную структуру директорий
 mkdir -p ${ANDROID_HOME}/cmdline-tools/latest
 mv cmdline-tools/* ${ANDROID_HOME}/cmdline-tools/latest/
 rmdir cmdline-tools
 
 debug_info "Content of ANDROID_HOME" ${ANDROID_HOME}
 
-# Принимаем лицензии и устанавливаем необходимые компоненты SDK
 yes | sdkmanager --licenses
-sdkmanager --verbose "platform-tools" "platforms;android-33" "system-images;android-33;google_apis;x86_64" "emulator"
+
+# Устанавливаем компоненты по отдельности и проверяем результат
+sdkmanager --verbose "platform-tools"
+sdkmanager --verbose "platforms;android-33"
+sdkmanager --verbose "system-images;android-33;google_apis;x86_64"
+sdkmanager --verbose "emulator"
 
 debug_info "Content of system-images" ${ANDROID_HOME}/system-images
 
-# Создаем AVD, автоматически принимая настройки по умолчанию и перезаписывая существующий, если он есть
+# Проверяем, что системный образ установлен
+if [ ! -d "${ANDROID_HOME}/system-images/android-33/google_apis/x86_64" ]; then
+    echo "System image not found. Trying to reinstall..."
+    sdkmanager --uninstall "system-images;android-33;google_apis;x86_64"
+    sdkmanager --verbose "system-images;android-33;google_apis;x86_64"
+fi
+
+debug_info "Content of system-images after check" ${ANDROID_HOME}/system-images
+
 echo "no" | avdmanager --verbose create avd -n test_avd -k "system-images;android-33;google_apis;x86_64" --force
 
 debug_info "Content of .android/avd" /root/.android/avd
 
-# Настраиваем конфигурацию AVD
 mkdir -p /root/.android/avd/test_avd.avd
 cat << EOF > /root/.android/avd/test_avd.avd/config.ini
 avd.ini.encoding=UTF-8
@@ -58,17 +65,14 @@ hw.camera.front=emulated
 disk.dataPartition.size=2048M
 EOF
 
-# Создаем файл ini для AVD
 cat << EOF > /root/.android/avd/test_avd.ini
 avd.ini.encoding=UTF-8
 path=/root/.android/avd/test_avd.avd
 target=android-33
 EOF
 
-# Проверяем, что AVD создан
 avdmanager list avd
 
-# Выводим значения переменных окружения для проверки
 echo "ANDROID_HOME: $ANDROID_HOME"
 echo "ANDROID_SDK_ROOT: $ANDROID_SDK_ROOT"
 echo "PATH: $PATH"

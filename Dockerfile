@@ -28,6 +28,8 @@ WORKDIR /root
 # Копируем и запускаем скрипт установки эмулятора
 COPY ./shared/install-emulator.sh /root/install-emulator.sh
 RUN chmod +x /root/install-emulator.sh && \
-    timeout 30m /root/install-emulator.sh
+    timeout 60m /root/install-emulator.sh && \
+    ls -la $ANDROID_HOME/system-images/android-33/google_apis/x86_64 && \
+    avdmanager list avd
 
 CMD ["/bin/bash"]
