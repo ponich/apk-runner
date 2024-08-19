@@ -6,15 +6,18 @@ is_container_running() {
     docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"
 }
 
-stop_and_remove_container() {
-    echo "Останавливаем и удаляем контейнер..."
-    docker-compose down --volumes --remove-orphans
+is_container_exists() {
+    docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"
 }
 
-start_container_and_enter_bash() {
-    echo "Запускаем контейнер с привилегиями и входим в bash..."
-    docker-compose up -d --build
-    docker exec -it ${CONTAINER_NAME} /bin/bash
+start_container() {
+    echo "Запускаем контейнер..."
+    docker-compose up -d
+}
+
+stop_container() {
+    echo "Останавливаем контейнер..."
+    docker-compose stop
 }
 
 enter_container_bash() {
@@ -25,9 +28,20 @@ enter_container_bash() {
 if is_container_running; then
     echo "Контейнер уже запущен. Входим в bash..."
     enter_container_bash
+elif is_container_exists; then
+    echo "Контейнер существует, но не запущен. Запускаем и входим в bash..."
+    start_container
+    enter_container_bash
 else
-    stop_and_remove_container
-    start_container_and_enter_bash
+    echo "Контейнер не существует. Создаем, запускаем и входим в bash..."
+    docker-compose up -d --build
+    enter_container_bash
 fi
 
-stop_and_remove_container
+# Спрашиваем пользователя, хочет ли он остановить контейнер после выхода
+read -p "Хотите ли вы остановить контейнер после выхода? (y/n) " choice
+case "$choice" in
+  y|Y ) stop_container;;
+  n|N ) echo "Контейнер остается запущенным.";;
+  * ) echo "Неверный ввод. Контейнер остается запущенным.";;
+esac
