@@ -7,7 +7,7 @@ COPY shared/app.apk /root/app.apk
 RUN adb install /root/app.apk
 
 # Запускаем приложение и делаем скриншот
-CMD adb shell monkey -p $(aapt dump badging /root/app.apk | awk -F" " '/package/{gsub("name=|'"'"'","");  print $2}') 1 && \
-    sleep 10 && \
-    adb shell screencap -p /sdcard/screenshot.png && \
-    adb pull /sdcard/screenshot.png /root/screenshot.png
+# CMD adb shell monkey -p $(aapt dump badging /root/app.apk | awk -F" " '/package/{gsub("name=|'"'"'","");  print $2}') 1 && \
+#     sleep 10 && \
+#     adb shell screencap -p /sdcard/screenshot.png && \
+#     adb pull /sdcard/screenshot.png /root/screenshot.png
