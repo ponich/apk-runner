@@ -1,31 +1,12 @@
+version: '3'
 services:
-  ubuntu-24-04:
-    platform: linux/amd64
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: ubuntu-24-04-base
-    container_name: ubuntu-24-04-container
-    tty: true
-    stdin_open: true
+  android:
+    build: .
+    ports:
+      - "6080:6080"  # Для доступа к VNC
+      - "5554:5554"  # Для ADB
+      - "5555:5555"  # Для ADB
+    environment:
+      - DEVICE=Samsung Galaxy S10
     volumes:
-      - ./shared:/home/shared
-      - /dev/kvm:/dev/kvm
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 2G
-    devices:
-      - /dev/kvm:/dev/kvm
-    privileged: true
-    cap_add:
-      - ALL
-    security_opt:
-      - seccomp:unconfined
-    networks:
-      - my-network
-
-networks:
-  my-network:
-    driver: bridge
+      - ./screenshot.png:/root/screenshot.png
