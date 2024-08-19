@@ -20,6 +20,10 @@ services:
         devices:
             - /dev/kvm:/dev/kvm
         privileged: true
+        cap_add:
+            - ALL
+        security_opt:
+            - seccomp:unconfined
         networks:
             - my-network
 
