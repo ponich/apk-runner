@@ -28,6 +28,6 @@ WORKDIR /root
 # Копируем и запускаем скрипт установки эмулятора
 COPY ./shared/install-emulator.sh /root/install-emulator.sh
 RUN chmod +x /root/install-emulator.sh && \
-    /root/install-emulator.sh
+    timeout 30m /root/install-emulator.sh
 
 CMD ["/bin/bash"]
